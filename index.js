@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 const blogSchema = mongoose.Schema({
@@ -13,7 +14,12 @@ const blogSchema = mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema);
 
-const mongoUrl = 'mongodb://localhost/bloglist';
+const replacedUrl = process.env.MONGO_DB_URI.replace(
+  '<PASSWORD>',
+  process.env.DB_PASSWORD
+);
+
+const mongoUrl = replacedUrl;
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors());
@@ -33,7 +39,6 @@ app.post('/api/blogs', (request, response) => {
   });
 });
 
-const PORT = 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
