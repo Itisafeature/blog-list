@@ -3,7 +3,28 @@ const supertest = require('supertest');
 const helper = require('./test_helper');
 const app = require('../app');
 const api = supertest(app);
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
+const User = require('../models/user');
+
+let token;
+
+// beforeAll(async done => {
+//   const user = new User({
+//     username: 'test',
+//     name: 'test',
+//     password: 'test',
+//   });
+
+//   const savedUser = await user.save();
+
+//   await api
+//     .post('/api/users')
+//     .send(savedUser)
+//     .end((err, response) => {
+//       console.log('here');
+//     });
+// });
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -44,6 +65,7 @@ describe('creating a blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization')
       .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
